@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874048670433",
+    "project_id": "memoryjournal-a1087",
+    "storage_bucket": "memoryjournal-a1087.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874048670433:android:d6e490b70734d7da1405a0",
+        "android_client_info": {
+          "package_name": "com.memoryjournal.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjybtuonQGuSymC0r0sxTS6y5EBnprdK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
