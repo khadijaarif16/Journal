@@ -17,6 +17,8 @@ fun NewEntryScreen(navController: NavController) {
     var title by remember { mutableStateOf("") }
     var text by remember {mutableStateOf("")}
     val saveEntry = rememberSaveEntry()
+    val locationPicker = LocationPicker()
+    val location by locationPicker.location
 
     Scaffold(
         topBar = {
@@ -52,14 +54,14 @@ fun NewEntryScreen(navController: NavController) {
                 onClick = {},modifier = Modifier.fillMaxWidth()
             ){Text("Add Photo")}
             OutlinedButton(
-                onClick = {},modifier = Modifier.fillMaxWidth()
-            ){Text("Add Location")}
+                onClick = {locationPicker.reqLocation()},modifier = Modifier.fillMaxWidth()
+            ){Text(if (location!= null)"Location captured" else "Add Location")}
 
 
             //save button
             Button(
                 onClick={
-                    saveEntry(title, text)
+                    saveEntry(title, text,location?.first,location?.second)
                     navController.popBackStack() //go to home
                 }, modifier = Modifier.fillMaxWidth()
             ){Text("Save Memory")}

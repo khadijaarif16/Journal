@@ -22,4 +22,3 @@ class Location(private val context: Context){
         }
     }
 
-}
