@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.googleServices)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {

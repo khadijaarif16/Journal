@@ -30,10 +30,13 @@ actual fun rememberSaveEntry(): (String, String,Double?, Double?) -> Unit {
     val viewModel: AppViewModel = viewModel()
 
     val scope= rememberCoroutineScope ()
-    return{ title,text,lat,long->
+    return{ title,text,lat,lng->
         //doesnt block UI
         scope.launch {
-            viewModel.saveEntry(title = title, text=text, latitude =lat, longitude = long)
+            val weather = if(lat!= null && lng !=null){
+                WeatherService().getWeather(lat,lng)
+            } else null
+            viewModel.saveEntry(title = title, text=text, latitude =lat, longitude = lng, weather = weather)
         }
         }
     }
