@@ -1,4 +1,9 @@
 package com.memoryjournal.app
+
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.layout.ContentScale
+import androidx.navigation.NavController
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -7,12 +12,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryDetailScreen(entryId: String, navController: NavController) {
+actual fun EntryDetailScreen(entryId: String, navController: NavController) {
     //load real data from firebase later
     //entryid from home screen when card is tapped on
     val entry by rememberEntry(entryId)
@@ -36,7 +41,12 @@ fun EntryDetailScreen(entryId: String, navController: NavController) {
             ) {
                 //photo if exists
                 if (entry.photoPath != null) {
-                    Text("Placeholder photot")
+                    //Text("Placeholder photot")
+                    AsyncImage(
+                        model = entry.photoPath, contentDescription = "photo",
+                        modifier= Modifier.fillMaxWidth().height(250.dp),
+                        contentScale =  ContentScale.Crop
+                    )
                 }
 
                 Text(
@@ -54,11 +64,12 @@ fun EntryDetailScreen(entryId: String, navController: NavController) {
                 if (entry.weather != null) {
                     Text(text = "${entry.weather}", style = MaterialTheme.typography.bodyMedium)
                 }
-                //timestamp
-                Text(text = "${entry.createdAt}", style = MaterialTheme.typography.labelSmall)
+                //timestamp - orignally milliseconds but formatted
+                val formattedDate = java.text.SimpleDateFormat("MMMM d,yyyy 'at' h:mm:a",
+                java.util.Locale.getDefault()).format(java.util.Date(entry.createdAt))
+                Text(text = "${formattedDate}", style = MaterialTheme.typography.labelSmall)
 
             }
         }
     }
 }
-

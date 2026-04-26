@@ -18,10 +18,13 @@ actual fun rememberError(): State<String?> {
 }
 
 @Composable
-actual fun rememberSaveEntry(): (String, String, Double?, Double?) -> Unit {
-    return{ _,_,_,_-> }
+actual fun rememberSaveEntry(): (String, String, String?,Double?, Double?) -> Unit {
+    return{ _,_,_,_,_-> }
 }
-
+@Composable
+actual fun rememberDeleteEntry(): (String) -> Unit {
+    return { }
+}
 @Composable
 actual fun rememberEntry(entryId: String): State<JournalEntry?> {
     return remember{mutableStateOf(null)}
@@ -32,5 +35,13 @@ actual fun LocationPicker(): LocationResult{
     return LocationResult(
         location = remember { mutableStateOf(null)},
             reqLocation = {}
+    )
+}
+
+@Composable
+actual fun pickPhoto(): PhotoResults {
+    return PhotoResults(
+        photoPath = remember { mutableStateOf(null)},
+        gallery ={}, camera = {}
     )
 }

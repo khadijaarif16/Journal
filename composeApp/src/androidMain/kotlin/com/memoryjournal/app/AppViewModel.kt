@@ -1,14 +1,19 @@
 package com.memoryjournal.app
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+
+//import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-class AppViewModel: ViewModel() {
+// get access to app context safely
+class AppViewModel(application: Application): AndroidViewModel(application) {
     //firebase repo
     private val repository = FirebaseRepository()
+    private val geofenceManager = GeofenceManager(application)
     private val _entries = MutableStateFlow<List<JournalEntry>>(emptyList())
     val entries: StateFlow<List<JournalEntry>> = _entries.asStateFlow() //for the ui
 
@@ -44,8 +49,16 @@ class AppViewModel: ViewModel() {
                     latitude = latitude, longitude = longitude,
                     locationName = locationName, weather = weather
                 )
-                repository.saveEntry(entry)
-            }catch (e: Exception){_error.value= e.message}
+                //save to firestore but also get entryId for geofencinh
+                val entryId=repository.saveEntry(entry)
+                android.util.Log.d("AppViewModel", "Entry saved with id: $entryId")
+
+                //add geofence if location is available
+                if(latitude!= null && longitude != null){geofenceManager.add(entryId, latitude, longitude)}
+            }catch (e: Exception) {
+                _error.value = e.message
+                android.util.Log.e("AppViewModel", "Save failed: ${e.message}")
+            }
         }
     }
 

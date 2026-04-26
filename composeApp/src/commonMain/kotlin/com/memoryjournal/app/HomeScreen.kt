@@ -7,10 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
 @Composable
 fun HomeScreen(entries: List<JournalEntry>,
                error: String?,
-               onEntryClick: (String) -> Unit){
+               onEntryClick: (String) -> Unit,
+               onDelete: (String) -> Unit){
     //display error
 
     error?.let{
@@ -42,7 +46,8 @@ fun HomeScreen(entries: List<JournalEntry>,
                 EntryCard(entry=entry, onClick = {
                     //open the entry to view using entryid
                     onEntryClick(entry.id)
-                })
+                },
+                onDelete= { onDelete(entry.id)} )
 
             }
         }
@@ -51,16 +56,25 @@ fun HomeScreen(entries: List<JournalEntry>,
 
 //entrycard
 @Composable
-fun EntryCard(entry: JournalEntry, onClick:() -> Unit) {
+fun EntryCard(entry: JournalEntry, onClick: () -> Unit, onDelete: () -> Unit) {
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = entry.title.ifEmpty{"Untitled"},
-                style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = entry.text, style = MaterialTheme.typography.bodySmall, maxLines = 2)
-            if (entry.locationName != null) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            //entry
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = entry.title.ifEmpty { "Untitled" }, style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "${entry.locationName}", style = MaterialTheme.typography.labelSmall)
+                Text(text = entry.text, style = MaterialTheme.typography.bodySmall, maxLines = 2)
+                if (entry.locationName != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(text = "${entry.locationName}", style = MaterialTheme.typography.labelSmall)
+                }
+            }
+            //delete button-right
+            IconButton(onClick = onDelete) {
+                Text("x")
             }
         }
     }

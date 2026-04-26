@@ -8,24 +8,28 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 
 @Composable
 
-fun App() {
+fun App(startEntryId: String? = null) {
     MaterialTheme {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+
+
         Scaffold(
             //only visible on 3 screens - nav bar
             bottomBar = {
-                if(currentRoute in listOf("home","map","settings")){
+                if(currentRoute in listOf("home","settings")){
                     NavigationBar {
                         //home
                         NavigationBarItem(
@@ -34,13 +38,7 @@ fun App() {
                             selected = currentRoute=="home",
                             onClick = {navController.navigate("home")}
                         )
-                        //map
-                        NavigationBarItem(
-                            icon = {Icon(Icons.Filled.LocationOn, contentDescription = "Map") },
-                            label = {Text("Map")},
-                            selected = currentRoute=="map",
-                            onClick = {navController.navigate("map")}
-                        )
+
                         //settings
                         NavigationBarItem(
                             icon = {Icon(Icons.Filled.Settings, contentDescription = "Settings") },
@@ -72,13 +70,16 @@ fun App() {
                 composable("home"){
                     val entries by rememberEntries()
                     val error by rememberError()
-                    HomeScreen(entries = entries, error=error, onEntryClick = {id -> navController.navigate("entry_detail/$id")})}
+                    val deleteEntry= rememberDeleteEntry()
+                    HomeScreen(entries = entries, error=error,
+                        onEntryClick = {id -> navController.navigate("entry_detail/$id")},
+                        onDelete = {id -> deleteEntry(id)})}
                 composable("new_entry"){NewEntryScreen(navController)}
-                composable("entry_detail/{entryId}"){
+                composable("entry_detail/{entryId}",
+                    deepLinks = listOf(navDeepLink { uriPattern = "memoryjournal://entry/{entryId}" })){
                     backStackEntry-> val entryId = backStackEntry.arguments?.getString("entryId")?:""
                     EntryDetailScreen(entryId,navController = navController)
                 }
-                composable("map") { MapScreen(navController) }
                 composable("settings") {SettingsScreen() }
             }
         }

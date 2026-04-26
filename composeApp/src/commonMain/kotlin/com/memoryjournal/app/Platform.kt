@@ -15,12 +15,14 @@ expect fun rememberError(): State<String?>
 
 //return func to save new entry
 @Composable
-expect fun rememberSaveEntry(): (String, String,Double?, Double?) -> Unit
+expect fun rememberSaveEntry(): (String, String,String?,Double?, Double?) -> Unit
 
 //read from firebase with a specific entryid
 @Composable
 expect fun rememberEntry(entryId:String): State<JournalEntry?>
 
+@Composable
+expect fun rememberDeleteEntry(): (String) -> Unit
 data class LocationResult(
     val location: State<Pair<Double,Double>?>, //lat,lang pair or null
     val reqLocation: ()-> Unit //function to req loc - permission
@@ -29,3 +31,13 @@ data class LocationResult(
 //null if perm denied, otherwise location
 @Composable
 expect fun LocationPicker(): LocationResult
+
+//select phot from gallery
+data class PhotoResults(
+    val photoPath: State<String?>,
+    val gallery: () -> Unit,
+    val camera: () -> Unit
+)
+@Composable
+expect fun pickPhoto(): PhotoResults
+
